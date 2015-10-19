@@ -1,0 +1,29 @@
+AS=as
+LD=ld
+ASFLAGS=-g -o
+LDFLAGS=-o
+LIBS=-lc
+DYNAMIC=/lib/ld-linux.so.2
+EXE=linklist
+
+
+target:singly_linklist main_compile
+singly_linklist:
+	cd ./src/singly_linklist/ && make
+main_compile:
+	$(AS) $(ASFLAGS) singly_main.o singly_main.S
+	cp -rf ./singly_main.o ./bin/
+
+target_link:link
+link:
+	$(LD) $(LDFLAGS) $(EXE) $(LIBS) -dynamic-linker $(DYNAMIC) ./bin/singly_linklist.o ./bin/singly_main.o -e main
+	cp -rf ./linklist ./bin/
+
+target_clean:singly_linklist_clean main_clean
+singly_linklist_clean:
+	cd ./src/singly_linklist/ && rm *.o
+main_clean:
+	rm *.o 
+	rm $(EXE)
+	cd ./bin/ && rm *.o 
+	cd ./bin/ && rm $(EXE)
